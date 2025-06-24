@@ -52,7 +52,9 @@ client.on('messageCreate', (message) => {
 });
 
 // Chargement dynamique des commandes pour l'exécution
-const commandsDir = join(process.cwd(), 'src', 'commands');
+const isProduction = process.env.NODE_ENV === 'production' || !process.argv[1].endsWith('.ts');
+const commandsPath = join(process.cwd(), isProduction ? 'dist' : 'src', 'commands');
+const fileExtension = isProduction ? '.js' : '.ts';
 
 function getCommandFiles(dir: string): string[] {
   let results: string[] = [];
@@ -62,19 +64,19 @@ function getCommandFiles(dir: string): string[] {
     const stat = statSync(filePath);
     if (stat && stat.isDirectory()) {
       results = results.concat(getCommandFiles(filePath));
-    } else if (extname(file) === '.ts') {
+    } else if (file.endsWith(fileExtension)) {
       results.push(filePath);
     }
   });
   return results;
 }
-const commandFiles = getCommandFiles(commandsDir);
+const commandFiles = getCommandFiles(commandsPath);
 
 for (const file of commandFiles) {
   const moduleUrl = pathToFileURL(file).href;
   import(moduleUrl).then((command) => {
     if (command.data && command.execute) {
-      const relativePath = relative(commandsDir, file);
+      const relativePath = relative(commandsPath, file);
       const category = relativePath.split(sep)[0] || 'Général';
       if (typeof command.execute === 'function') {
         commandsMap.set(command.data.name, { ...command, category });

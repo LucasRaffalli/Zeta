@@ -1,10 +1,15 @@
 import { REST, Routes, SlashCommandBuilder } from 'discord.js';
 import { env } from '../config.js';
 import { readdirSync, statSync } from 'fs';
-import { join, extname } from 'path';
+import { join, extname, dirname } from 'path';
 import { pathToFileURL } from 'url';
 
-// Récupère récursivement tous les fichiers .ts dans un dossier
+// Détermine si on est en production (code compilé) ou en développement
+const isProduction = process.env.NODE_ENV === 'production' || !process.argv[1].endsWith('.ts');
+const commandsDir = join(process.cwd(), isProduction ? 'dist' : 'src', 'commands');
+const fileExtension = isProduction ? '.js' : '.ts';
+
+// Récupère récursivement tous les fichiers de commande dans un dossier
 function getCommandFiles(dir: string): string[] {
   let results: string[] = [];
   const list = readdirSync(dir);
@@ -13,7 +18,7 @@ function getCommandFiles(dir: string): string[] {
     const stat = statSync(filePath);
     if (stat && stat.isDirectory()) {
       results = results.concat(getCommandFiles(filePath));
-    } else if (extname(file) === '.ts') {
+    } else if (file.endsWith(fileExtension)) {
       results.push(filePath);
     }
   });
@@ -22,7 +27,7 @@ function getCommandFiles(dir: string): string[] {
 
 export async function registerAllCommands(clientId: string, token: string) {
   const commands: any[] = [];
-  const commandFiles = getCommandFiles(join(process.cwd(), 'src', 'commands'));
+  const commandFiles = getCommandFiles(commandsDir);
   for (const file of commandFiles) {
     const moduleUrl = pathToFileURL(file).href;
     const command = await import(moduleUrl);
