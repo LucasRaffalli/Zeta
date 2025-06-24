@@ -39,13 +39,13 @@ export async function handleModNoteModal(interaction: ModalSubmitInteraction) {
     const userId = interaction.customId.split('_')[2];
     const note = interaction.fields.getTextInputValue('note');
     const guild = interaction.guild;
-    if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', ephemeral: true });
+    if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', flags: 64  });
     const hasAccessModal = await checkModAccess(guild, interaction.member as any);
     if (!hasAccessModal) {
-      return interaction.reply({ content: 'Tu ne peux pas utiliser cette commande.', ephemeral: true });
+      return interaction.reply({ content: 'Tu ne peux pas utiliser cette commande.', flags: 64  });
     }
     const target = await guild.members.fetch(userId).then(m => m.user).catch(() => null);
-    if (!target) return interaction.reply({ content: 'Utilisateur introuvable.', ephemeral: true });
+    if (!target) return interaction.reply({ content: 'Utilisateur introuvable.', flags: 64  });
     const noteObj = {
       note,
       author: interaction.user.tag,
@@ -80,7 +80,7 @@ export async function handleModNoteModal(interaction: ModalSubmitInteraction) {
       )
       .setColor(colors.SUCCESS)
       .setThumbnail(target.displayAvatarURL());
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    await interaction.reply({ embeds: [embed], flags: 64  });
   } catch (error) {
     await handleError(interaction, error);
   }

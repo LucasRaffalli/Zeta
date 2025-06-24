@@ -83,10 +83,10 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   try {
     const target = interaction.options.getUser('utilisateur', true);
     const guild = interaction.guild;
-    if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', ephemeral: true });
+    if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', flags: 64  });
     const hasAccess = await checkModAccess(guild, interaction.member as GuildMember);
     if (!hasAccess) {
-      return interaction.reply({ content: 'Tu ne peux pas utiliser cette commande.', ephemeral: true });
+      return interaction.reply({ content: 'Tu ne peux pas utiliser cette commande.', flags: 64  });
     }
     const collection = await getModerationCollection();
     const history = await collection.findOne<ModerationHistory>({ guildId: guild.id, userId: target.id });
@@ -124,12 +124,12 @@ export async function handleHistoryButton(interaction: ButtonInteraction | Strin
     let cat = category as Category;
     if (!CATEGORIES.includes(cat)) cat = 'home';
     const guild = interaction.guild;
-    if (!guild) return interaction.reply({ content: 'Serveur introuvable.', ephemeral: true });
+    if (!guild) return interaction.reply({ content: 'Serveur introuvable.', flags: 64  });
     let member: GuildMember | undefined;
     try {
       member = await guild.members.fetch(userId);
     } catch {
-      return interaction.reply({ content: 'Utilisateur introuvable ou a quitté le serveur.', ephemeral: true });
+      return interaction.reply({ content: 'Utilisateur introuvable ou a quitté le serveur.', flags: 64  });
     }
     const collection = await getModerationCollection();
     const history = await collection.findOne<ModerationHistory>({ guildId: guild.id, userId: member.id });

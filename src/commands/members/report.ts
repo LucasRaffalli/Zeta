@@ -19,7 +19,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     try {
         const target = interaction.options.getUser('utilisateur', true);
         if (target.id === interaction.user.id) {
-            return interaction.reply({ content: 'Tu ne peux pas te signaler toi-même.', ephemeral: true });
+            return interaction.reply({ content: 'Tu ne peux pas te signaler toi-même.', flags: 64 });
         }
         const modal = new ModalBuilder()
             .setCustomId(`report_modal_${target.id}`)
@@ -49,13 +49,13 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 export async function handleReportModal(interaction: ModalSubmitInteraction) {
     try {
         const { client, guild } = interaction;
-        if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', ephemeral: true });
+        if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', flags: 64  });
 
         const userId = interaction.customId.split('_')[2];
         const raison = interaction.fields.getTextInputValue('raison');
         const preuve = interaction.fields.getTextInputValue('preuve');
         const target = await guild.members.fetch(userId).then(m => m.user).catch(() => null);
-        if (!target) return interaction.reply({ content: 'Utilisateur introuvable.', ephemeral: true });
+        if (!target) return interaction.reply({ content: 'Utilisateur introuvable.', flags: 64  });
 
         await interaction.deferReply({ ephemeral: true });
 

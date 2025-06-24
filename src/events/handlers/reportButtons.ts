@@ -19,13 +19,13 @@ export async function handleReportButtons(interaction: ButtonInteraction) {
 
     const report = await Report.findById(reportId);
     if (!report) {
-      const replyPayload = { content: '❌ Signalement introuvable dans la base de données.', ephemeral: true };
+      const replyPayload = { content: '❌ Signalement introuvable dans la base de données.', flags: 64  };
       return interaction.deferred ? interaction.editReply(replyPayload) : interaction.reply(replyPayload);
     }
 
     const channel = interaction.channel as ThreadChannel;
     if (!channel?.isThread()) {
-      const replyPayload = { content: '❌ Cette action doit être effectuée dans un thread de signalement.', ephemeral: true };
+      const replyPayload = { content: '❌ Cette action doit être effectuée dans un thread de signalement.', flags: 64  };
       return interaction.deferred ? interaction.editReply(replyPayload) : interaction.reply(replyPayload);
     }
 
@@ -125,13 +125,13 @@ export async function handleReportButtons(interaction: ButtonInteraction) {
         break;
 
       default:
-        await interaction.reply({ content: '❌ Action invalide.', ephemeral: true });
+        await interaction.reply({ content: '❌ Action invalide.', flags: 64  });
     }
 
   } catch (error) {
     console.error("Erreur inattendue dans handleReportButtons:", error);
     if (interaction.isRepliable() && !interaction.replied && !interaction.deferred) {
-        await interaction.reply({ content: "Une erreur est survenue.", ephemeral: true }).catch(() => {});
+        await interaction.reply({ content: "Une erreur est survenue.", flags: 64  }).catch(() => {});
     }
   }
 } 

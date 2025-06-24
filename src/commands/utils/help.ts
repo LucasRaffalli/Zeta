@@ -44,5 +44,5 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     embed.addFields({ name: `**${emoji} ${categoryName}**`, value: commandList });
   });
 
-  await interaction.reply({ embeds: [embed], ephemeral: true });
+  await interaction.reply({ embeds: [embed], flags: 64  });
 } 

@@ -32,7 +32,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     try {
         const action = interaction.options.getString('action', true) as 'add' | 'remove' | 'list';
         const guild = interaction.guild;
-        if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', ephemeral: true });
+        if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', flags: 64  });
 
         if (action === 'list') {
             const access = await ModAccess.findOne({ guildId: interaction.guild!.id });
@@ -45,7 +45,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
                     { name: 'Rôles autorisés', value: allowedRoles, inline: false }
                 )
                 .setColor(colors.PRIMARY);
-            return interaction.reply({ embeds: [embed], ephemeral: true });
+            return interaction.reply({ embeds: [embed], flags: 64  });
         }
 
         const member = interaction.options.getUser('membre');
@@ -54,12 +54,12 @@ export async function execute(interaction: ChatInputCommandInteraction) {
         if (member) type = 'user';
         if (role) type = 'role';
         if (!type) {
-            return interaction.reply({ content: 'Merci de préciser un membre ou un rôle.', ephemeral: true });
+            return interaction.reply({ content: 'Merci de préciser un membre ou un rôle.', flags: 64  });
         }
 
         const hasAccess = await checkModAccess(guild, interaction.member as any);
         if (!hasAccess) {
-            return interaction.reply({ content: 'Tu ne peux pas utiliser cette commande.', ephemeral: true });
+            return interaction.reply({ content: 'Tu ne peux pas utiliser cette commande.', flags: 64  });
         }
 
         let cibleId = type === 'user' ? member!.id : role!.id;
@@ -110,7 +110,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
             .setTitle('Gestion des accès modération')
             .setDescription(`${action === 'add' ? 'Ajouté' : 'Retiré'} : ${cibleName} (${type === 'user' ? 'Membre' : 'Rôle'})`)
             .setColor(action === 'add' ? colors.SUCCESS : colors.ERROR);
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: 64  });
 
     } catch (error) {
         await handleError(interaction, error);
