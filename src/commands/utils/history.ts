@@ -3,6 +3,7 @@ import { getModerationCollection, ModerationHistory } from '../../db/moderation.
 import { handleError } from '../../utils/errorHandler.js';
 import { buildActionRows, PAGE_SIZE, CATEGORIES, Category } from '../../events/handlers/historyComponents.js';
 import { colors } from '../../utils/colors.js';
+import { ModAccess } from '../../db/modaccess.js';
 
 function buildHomeEmbed(history: ModerationHistory | null, member: GuildMember) {
   return new EmbedBuilder()
@@ -23,7 +24,7 @@ function buildEmbed(history: ModerationHistory | null, targetTag: string, catego
     return new EmbedBuilder().setTitle('Erreur').setDescription('Page inconnue.');
   }
   let items: any[] = [];
-  if (history && category !== 'home') {
+  if (history) {
     const arr = history[category as keyof Omit<ModerationHistory, 'userId' | 'guildId'>];
     items = Array.isArray(arr) ? arr : [];
   }
@@ -67,8 +68,8 @@ export const data = new SlashCommandBuilder()
 async function checkModAccess(guild: Guild, user: GuildMember) {
   const ownerId = (await guild.fetchOwner()).id;
   if (user.id === ownerId) return true;
-  const collection = await getModerationCollection();
-  const access = await collection.findOne({ guildId: guild.id });
+
+  const access = await ModAccess.findOne({ guildId: guild.id });
   if (!access) return false;
   if (access.allowedUsers && access.allowedUsers.includes(user.id)) return true;
   if (access.allowedRoles && user.roles && user.roles.cache) {
