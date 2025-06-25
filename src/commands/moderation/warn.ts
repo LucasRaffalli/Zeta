@@ -24,11 +24,11 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     const target = interaction.options.getUser('utilisateur', true);
     const reason = interaction.options.getString('raison') || 'Aucune raison spécifiée';
     const guild = interaction.guild;
-    if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', flags: 64  });
+    if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', flags: 64 });
 
     const hasAccess = await checkModAccess(guild, interaction.member as any);
     if (!hasAccess) {
-      return interaction.reply({ content: 'Tu ne peux pas utiliser cette commande.', flags: 64  });
+      return interaction.reply({ content: 'Tu ne peux pas utiliser cette commande.', flags: 64 });
     }
 
     const warnObj = {
@@ -68,7 +68,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       .setColor(colors.SUCCESS)
       .setThumbnail(target.displayAvatarURL());
 
-    await interaction.reply({ embeds: [embed], flags: 64  });
+    await interaction.reply({ embeds: [embed], flags: 64 });
 
     // Vérifier les sanctions automatiques
     const targetMember = await guild.members.fetch(target.id);
@@ -76,4 +76,4 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   } catch (error) {
     await handleError(interaction, error);
   }
-} 
+}

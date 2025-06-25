@@ -10,6 +10,10 @@ import { pathToFileURL } from 'url';
 import { connectToDB } from './db/index.js';
 import { handleInteractionCreate } from './events/interactionCreate.js';
 import { handleGuildCreate } from './events/guildCreate.js';
+import { setRandomActivity } from './utils/activities.js';
+import { set } from 'mongoose';
+import OpenAI from 'openai';
+import { handleZetaChat } from './events/handlers/zetaChat.js';
 
 async function connectDB() {
   const mongoClient = new MongoClient(env.MONGO_URI);
@@ -35,6 +39,12 @@ const client = new Client({
 
 client.once('ready', async () => {
   console.log(`🤖 Bot is ready! Logged in as ${client.user?.tag}`);
+  setRandomActivity(client);
+
+  setInterval(() => {
+    setRandomActivity(client);
+  }
+    , 60000); // Change activity every minute
   try {
     await registerAllCommands(env.CLIENT_ID!, env.BOT_TOKEN!);
     console.log('✅ Toutes les commandes slash ont été enregistrées');
@@ -43,12 +53,17 @@ client.once('ready', async () => {
   }
 });
 
-client.on('messageCreate', (message) => {
+client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
 
+  // Réponse ping classique
   if (message.content === 'ping') {
     message.reply('pong');
+    return;
   }
+
+  // Gestion du chat IA Zeta
+  await handleZetaChat(message, client);
 });
 
 // Chargement dynamique des commandes pour l'exécution

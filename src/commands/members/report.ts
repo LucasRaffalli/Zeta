@@ -49,13 +49,13 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 export async function handleReportModal(interaction: ModalSubmitInteraction) {
     try {
         const { client, guild } = interaction;
-        if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', flags: 64  });
+        if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', flags: 64 });
 
         const userId = interaction.customId.split('_')[2];
         const raison = interaction.fields.getTextInputValue('raison');
         const preuve = interaction.fields.getTextInputValue('preuve');
         const target = await guild.members.fetch(userId).then(m => m.user).catch(() => null);
-        if (!target) return interaction.reply({ content: 'Utilisateur introuvable.', flags: 64  });
+        if (!target) return interaction.reply({ content: 'Utilisateur introuvable.', flags: 64 });
 
         await interaction.deferReply({ ephemeral: true });
 
@@ -173,4 +173,4 @@ export async function handleReportModal(interaction: ModalSubmitInteraction) {
     } catch (error) {
         await handleError(interaction, error);
     }
-} 
+}

@@ -30,7 +30,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
         { name: 'Ban après kicks', value: rules.ban_after_kicks.toString(), inline: true },
       )
       .setColor(colors.PRIMARY);
-    await interaction.reply({ embeds: [embed], flags: 64  });
+    await interaction.reply({ embeds: [embed], flags: 64 });
   }
 
   if (sub === 'modifier') {
@@ -90,5 +90,5 @@ export async function handleModRulesModal(interaction: ModalSubmitInteraction) {
     { $set: { warn_limit, mute_after_warns, kick_after_mutes, ban_after_kicks } },
     { upsert: true }
   );
-  await interaction.reply({ content: '✅ Règles de modération mises à jour.', flags: 64  });
-} 
+  await interaction.reply({ content: '✅ Règles de modération mises à jour.', flags: 64 });
+}

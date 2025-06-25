@@ -168,4 +168,4 @@ export async function handleSuggestionsPagination(interaction: ButtonInteraction
   } catch (error) {
     await interaction.reply({ content: 'Erreur lors de la pagination.', flags: 64 });
   }
-} 
+}

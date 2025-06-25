@@ -33,19 +33,19 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     const type = interaction.options.getString('type', true) as 'warns' | 'notes';
     const index = interaction.options.getInteger('index', true) - 1;
     const guild = interaction.guild;
-    if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', flags: 64  });
+    if (!guild) return interaction.reply({ content: 'Commande utilisable uniquement sur un serveur.', flags: 64 });
     const hasAccess = await checkModAccess(guild, interaction.member as any);
     if (!hasAccess) {
-      return interaction.reply({ content: 'Tu ne peux pas utiliser cette commande.', flags: 64  });
+      return interaction.reply({ content: 'Tu ne peux pas utiliser cette commande.', flags: 64 });
     }
     const collection = await getModerationCollection();
     const filter = { guildId: guild.id, userId: target.id };
     const userHistory = await collection.findOne(filter);
     if (!userHistory || !Array.isArray(userHistory[type]) || userHistory[type].length === 0) {
-      return interaction.reply({ content: `Aucun ${type === 'warns' ? 'warn' : 'note'} à supprimer.`, flags: 64  });
+      return interaction.reply({ content: `Aucun ${type === 'warns' ? 'warn' : 'note'} à supprimer.`, flags: 64 });
     }
     if (index < 0 || index >= userHistory[type].length) {
-      return interaction.reply({ content: `Index invalide. L'utilisateur a ${userHistory[type].length} ${type === 'warns' ? 'warn(s)' : 'note(s)'}.`, flags: 64  });
+      return interaction.reply({ content: `Index invalide. L'utilisateur a ${userHistory[type].length} ${type === 'warns' ? 'warn(s)' : 'note(s)'}.`, flags: 64 });
     }
     userHistory[type].splice(index, 1);
     await collection.updateOne(filter, { $set: { [type]: userHistory[type] } });
@@ -54,8 +54,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       .setDescription(`Le ${type === 'warns' ? 'warn' : 'note'} #${index + 1} de ${target.tag} a été supprimé.`)
       .setColor(colors.SUCCESS)
       .setThumbnail(target.displayAvatarURL());
-    await interaction.reply({ embeds: [embed], flags: 64  });
+    await interaction.reply({ embeds: [embed], flags: 64 });
   } catch (error) {
     await handleError(interaction, error);
   }
-} 
+}
