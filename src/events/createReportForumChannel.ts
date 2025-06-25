@@ -3,7 +3,7 @@ import { ModAccess } from '../db/modaccess.js';
 
 export async function ensureReportForumChannel(guild: Guild): Promise<ForumChannel> {
   let forum = guild.channels.cache.find(
-    c => c.type === ChannelType.GuildForum && c.name === 'signaler-utilisateurs'
+    c => c.type === ChannelType.GuildForum && c.name === 'signalements-utilisateurs'
   ) as ForumChannel | undefined;
 
   if (!forum) {
@@ -17,7 +17,7 @@ export async function ensureReportForumChannel(guild: Guild): Promise<ForumChann
     ];
 
     forum = await guild.channels.create({
-      name: 'signaler-utilisateurs',
+      name: 'signalements-utilisateurs',
       type: ChannelType.GuildForum,
       reason: 'Forum pour les signalements utilisateurs',
       permissionOverwrites: permissionOverwrites,

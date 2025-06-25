@@ -77,7 +77,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
             if (type === 'role') {
                 const forum = guild.channels.cache.find(
-                    c => c.type === ChannelType.GuildForum && c.name === 'signaler-utilisateurs'
+                    c => c.type === ChannelType.GuildForum && c.name === 'signalements-utilisateurs'
                 ) as ForumChannel | undefined;
 
                 if (forum) {
