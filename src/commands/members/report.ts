@@ -121,7 +121,6 @@ export async function handleReportModal(interaction: ModalSubmitInteraction) {
         const buttons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder().setCustomId(`report_process_${report.id}`).setLabel('Fermer').setStyle(ButtonStyle.Success),
-                new ButtonBuilder().setCustomId(`report_ignore_${report.id}`).setLabel('Ignorer').setStyle(ButtonStyle.Secondary),
                 new ButtonBuilder().setCustomId(`report_moreinfo_${report.id}`).setLabel('Demander plus d\'informations').setStyle(ButtonStyle.Primary)
             );
 

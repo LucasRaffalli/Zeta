@@ -60,6 +60,13 @@ export async function handleReportButtons(interaction: ButtonInteraction) {
       case 'moreinfo':
         await Report.findByIdAndUpdate(reportId, { $set: { status: 'more_info', updatedAt: new Date() } });
         try {
+          // Vérification : existe-t-il déjà un salon temporaire ?
+          if (report.infoChannelId) {
+            const existing = guild.channels.cache.get(report.infoChannelId);
+            if (existing) {
+              return interaction.editReply({ content: `❌ Un salon de demande d'information existe déjà : <#${report.infoChannelId}>` });
+            }
+          }
           const member = await guild.members.fetch(report.authorId).catch(() => null);
           if (!member) {
             return interaction.editReply({ content: `❌ Impossible d'ajouter l'auteur du report (<@${report.authorId}>). Il a probablement quitté le serveur.` });
